@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/more_save"
+        android:title="@string/save" />
+    <item
+        android:id="@+id/more_save_lib"
+        android:icon="@drawable/ic_color_lib_icon_copy"
+        android:title="@string/saved_colors" />
+    <item
+        android:id="@+id/more_rate"
+        android:icon="@drawable/ic_star"
+        android:title="@string/rate_app" />
+    <item
+        android:id="@+id/more_ads"
+        android:icon="@drawable/ic_no_ads_5"
+        android:title="@string/premium" />
+
+    <item
+        android:id="@+id/more_opt"
+        android:icon="@drawable/settings"
+        android:title="@string/settings" />
+</menu>

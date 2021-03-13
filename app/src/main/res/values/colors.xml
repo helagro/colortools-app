@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryDark">#202520</color> <!-- status bar-->
+    <color name="colorAccent">#00e000</color>
+
+    <color name="green">#0b0</color>
+    <color name="green_light">#0e0</color>
+    <color name="m_yellow">#FFC300</color>
+    <color name="lightest_background">#fff</color>
+    <color name="light_green_background">#dddfdd</color>
+
+    <color name="text_dark_grey">#555</color>
+    <color name="primary_text">#557055</color>
+
+    <color name="alpha_slider_tint">#ceee</color>
+    <color name="clr_opt_btn_background">#fff</color>
+    <color name="no_ads_view_background">#444</color>
+    <color name="splash_background">#666</color>
+    <color name="main_text_clr">#060</color>
+</resources>

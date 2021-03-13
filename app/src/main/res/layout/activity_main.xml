@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
+
+
+    <RadioGroup
+        android:id="@+id/clr_show_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layoutDirection="ltr"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/clr_show"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/clr_show2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null" />
+
+    </RadioGroup>
+
+    <com.hlag.colorcompare.colorpicker.mAlphaSlider
+        android:id="@+id/alpha_slider"
+        android:layout_width="120dp"
+        android:layout_height="32dp"
+        android:layout_gravity="start"
+        android:layout_marginTop="55dp"
+        android:background="@drawable/rounded"
+        android:backgroundTint="@color/alpha_slider_tint" />
+
+    <ImageButton
+        android:id="@+id/more"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="end|top"
+        android:layout_margin="7dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/more" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@null"
+        android:clipChildren="false"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/clr_arrow"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center|bottom"
+            android:background="#0000"
+            android:scaleType="fitXY"
+            android:src="@drawable/arrow"
+            android:tooltipText="@string/arrow_tooltip"
+            android:layout_marginTop="15dp"/>
+
+
+        <com.hlag.colorcompare.colorpicker.mColorPickerView
+            android:id="@+id/color_picker_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/clr_picker_background"
+            app:alphaSlider="true"
+            app:alphaSliderView="@+id/alpha_slider"
+            app:density="15"
+            app:lightnessSlider="true"
+            app:lightnessSliderView="@+id/v_lightness_slider"
+            app:wheelType="CIRCLE" />
+
+        <com.hlag.colorcompare.EditTxtKeyboard
+            android:id="@+id/editText_color"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/main_textview_height"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded"
+            android:backgroundTint="@color/alpha_slider_tint"
+            android:clickable="false"
+            android:gravity="center"
+            android:hint="@string/colortext_hint"
+            android:inputType="textNoSuggestions|textVisiblePassword"
+            android:maxLines="1"
+            android:minWidth="240dp"
+            android:textColor="@color/main_text_clr"
+            android:textSize="@dimen/clr_i_u_text_size"
+            />
+
+        <com.hlag.colorcompare.colorpicker.mLightnessSlider
+            android:id="@+id/v_lightness_slider"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp" />
+
+
+        <RadioGroup
+            android:id="@+id/color_radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/clr_mode_radio_btn_height"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="13dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/color_hex_btn"
+                style="@style/ColorShowRadioBtn"
+                android:checked="true"
+                android:text="HEX" />
+
+
+            <RadioButton
+                android:id="@+id/color_rgb_btn"
+                style="@style/ColorShowRadioBtn"
+                android:text="RGB"
+                android:maxLines="1"/>
+
+            <RadioButton
+                android:id="@+id/color_int_btn"
+                style="@style/ColorShowRadioBtn"
+                android:text="INT" />
+
+        </RadioGroup>
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            ads:adSize="SMART_BANNER"
+            ads:adUnitId="ca-app-pub-9859833199806227/1033388641" />
+
+
+        <TextView
+            android:id="@+id/no_ads_premium_ads"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="25sp"
+            android:visibility="gone"
+            android:textColor="@color/clr_opt_btn_background"
+            android:background="@color/no_ads_view_background"
+            android:gravity="center"
+            android:clickable="true"/>
+
+    </LinearLayout>
+
+</FrameLayout>

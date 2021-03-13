@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="2"
+    android:orientation="horizontal"
+    android:padding="25dp"
+    android:layoutDirection="ltr"
+    android:id="@+id/opt_grid"
+    android:overScrollMode="ifContentScrolls">
+
+    <TextView
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/settings"
+        android:textSize="@dimen/clr_i_u_text_size"
+        android:textColor="#D52E3D"/>
+
+    <TextView
+        android:layout_columnWeight="1"
+        android:text="@string/dark_mode"
+        android:textSize="@dimen/settings_font_size"
+        android:layout_margin="8dp"/>
+
+    <Spinner
+        android:id="@+id/dark_mode_opt"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        android:textSize="@dimen/settings_font_size"/>
+
+
+    <TextView
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/alpha_settings"
+        android:textColor="#09d"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="10dp"/>
+
+
+    <RadioButton
+        android:id="@+id/opt_argb"
+        style="@style/SettingCheckbox"
+        android:text="ARGB"/>
+
+    <RadioButton
+        android:id="@+id/opt_rgba"
+        style="@style/SettingCheckbox"
+        android:text="RGBA"/>
+
+    <RadioButton
+        android:id="@+id/opt_byte_alpha"
+        style="@style/SettingCheckbox"
+        android:text="0 - 255"/>
+
+    <RadioButton
+        android:id="@+id/opt_float_alpha"
+        style="@style/SettingCheckbox"
+        android:text="0 - 1.0"/>
+
+    <TextView
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/open_source_licenses"
+        android:textColor="#3CD34E"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/color_picker_library"
+        android:textSize="@dimen/settings_font_size"
+        android:id="@+id/opt_colorpicker"/>
+
+
+
+
+</GridLayout>

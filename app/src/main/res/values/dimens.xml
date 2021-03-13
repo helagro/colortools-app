@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="color_row_height">60dp</dimen>
+    <dimen name="alpha_bar_translation">30dp</dimen>
+    <dimen name="default_slider_handler_radius">12dp</dimen>
+    <dimen name="clr_show_mode_btn_text_size">20dp</dimen>
+    <dimen name="clr_i_u_text_size">28dp</dimen>
+    <dimen name="settings_font_size">20dp</dimen>
+    <dimen name="main_textview_height">37dp</dimen>
+    <dimen name="clr_mode_radio_btn_height">42dp</dimen>
+</resources>

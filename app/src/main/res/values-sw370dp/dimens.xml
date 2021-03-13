@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="clr_show_mode_btn_text_size">25dp</dimen>
+    <dimen name="clr_i_u_text_size">38dp</dimen>
+    <dimen name="main_textview_height">47dp</dimen>
+    <dimen name="clr_mode_radio_btn_height">52dp</dimen>
+</resources>

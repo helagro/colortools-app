@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/update_color"
+        android:title="@string/update_color_to_selected" />
+    <item
+        android:id="@+id/delete_color"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete_color" />
+</menu>
