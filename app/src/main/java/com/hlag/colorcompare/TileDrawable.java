@@ -13,8 +13,6 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.flask.colorpicker.builder.PaintBuilder;
-
 
 public class TileDrawable extends Drawable {
 
