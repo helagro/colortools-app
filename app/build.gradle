@@ -1,11 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
     defaultConfig {
-        applicationId "com.hlag.compare"
+        applicationId "se.helagro.colorcompare"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 33
         versionCode 120
         versionName "1.20"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -47,12 +46,3 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0'
 }
-
-/*
-    unused
-        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.0'
-
-        apply plugin: 'com.google.android.gms.oss-licenses-plugin'
-        implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
-
- */

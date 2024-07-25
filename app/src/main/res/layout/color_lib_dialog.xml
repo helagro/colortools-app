@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@null">
 
-    <com.hlag.colorcompare.LibGridView
+    <se.helagro.colorcompare.LibGridView
         android:id="@+id/dialog_gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
