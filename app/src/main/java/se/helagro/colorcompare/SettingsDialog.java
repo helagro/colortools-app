@@ -1,5 +1,6 @@
 package se.helagro.colorcompare;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ public class SettingsDialog extends DialogFragment implements CompoundButton.OnC
     final static String IS_ARGB = "is_argb";
     final static String BYTE_ALPHA = "byte_alpha";
 
-    private int color;
+    private final int color;
     private RadioButton argb, rgba, byte_alpha, float_alpha;
 
     @Override
@@ -51,19 +52,20 @@ public class SettingsDialog extends DialogFragment implements CompoundButton.OnC
         dark_mode_opt.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == MainActivity.nightMode) {
+                if (position == MainActivity.nightMode)
                     return;
+
+                Activity activity = getActivity();
+                if (activity != null){
+                    MyApp.getSp(activity).edit().putInt(NIGHT_MODE_MODE, position).apply();
+                    activity.recreate();
                 }
-                MyApp.getSp(getContext()).edit().putInt(NIGHT_MODE_MODE, position).apply();
 
                 parent.setOnItemSelectedListener(null);
-                getActivity().recreate();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         argb = v.findViewById(R.id.opt_argb);
@@ -85,7 +87,11 @@ public class SettingsDialog extends DialogFragment implements CompoundButton.OnC
         v.findViewById(R.id.opt_colorpicker).setOnClickListener(view -> {
             Intent licenseIntent = new Intent(getContext(), LicensesActivity.class);
             licenseIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            getActivity().startActivity(licenseIntent);
+
+            Activity activity = getActivity();
+            if (activity != null){
+                activity.startActivity(licenseIntent);
+            }
         });
 
 
@@ -112,46 +118,53 @@ public class SettingsDialog extends DialogFragment implements CompoundButton.OnC
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (!isChecked) {
+        if (!isChecked)
             return;
-        }
 
-        switch (buttonView.getId()) {
-            case R.id.opt_argb:
-                isArgbChange(true);
-                rgba.setChecked(false);
-                break;
-            case R.id.opt_rgba:
-                isArgbChange(false);
-                argb.setChecked(false);
-                break;
-            case R.id.opt_byte_alpha:
-                isByteAlphaChange(true);
-                float_alpha.setChecked(false);
-                break;
-            case R.id.opt_float_alpha:
-                isByteAlphaChange(false);
-                byte_alpha.setChecked(false);
-                break;
+        final int buttonId = buttonView.getId();
+
+        if (buttonId == R.id.opt_argb){
+            isArgbChange(true);
+            rgba.setChecked(false);
+
+        } else if (buttonId == R.id.opt_rgba){
+            isArgbChange(false);
+            argb.setChecked(false);
+
+        } else if (buttonId == R.id.opt_byte_alpha){
+            isByteAlphaChange(true);
+            float_alpha.setChecked(false);
+
+        } else if (buttonId == R.id.opt_float_alpha){
+            isByteAlphaChange(false);
+            byte_alpha.setChecked(false);
         }
     }
 
     private void isArgbChange(boolean isArgb) {
+        Activity activity = getActivity();
+        if (activity == null)
+            return;
+
         MainActivity.is_argb = isArgb;
-        MyApp.getSp(getContext()).edit().putBoolean(IS_ARGB, isArgb).apply();
+        MyApp.getSp(activity).edit().putBoolean(IS_ARGB, isArgb).apply();
 
         if (!ColorConvert.isOpaque(color)) {
             MainActivity.wasOpaque = true;
-            ((MainActivity) getActivity()).onInputColor(color);
+            ((MainActivity) activity).onInputColor(color);
         }
     }
 
     private void isByteAlphaChange(boolean isByteValue) {
+        Activity activity = getActivity();
+        if (activity == null)
+            return;
+
         MainActivity.byte_alpha = isByteValue;
-        MyApp.getSp(getContext()).edit().putBoolean(BYTE_ALPHA, isByteValue).apply();
+        MyApp.getSp(activity).edit().putBoolean(BYTE_ALPHA, isByteValue).apply();
 
         if (!ColorConvert.isOpaque(color)) {
-            ((MainActivity) getActivity()).onInputColor(color);
+            ((MainActivity) activity).onInputColor(color);
         }
 
     }

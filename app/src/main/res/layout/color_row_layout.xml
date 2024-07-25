@@ -30,7 +30,7 @@
         android:padding="4dp"
         >
 
-        <com.hlag.colorcompare.EditTxtKeyboard
+        <se.helagro.colorcompare.EditTxtKeyboard
             android:id="@+id/color_row_name"
             android:layout_width="0dp"
             android:layout_height="42dp"
@@ -60,7 +60,7 @@
             app:layout_constraintTop_toTopOf="@+id/color_row_name"
              />
 
-        <com.hlag.colorcompare.EditTxtKeyboard
+        <se.helagro.colorcompare.EditTxtKeyboard
             android:id="@+id/color_row_color"
             android:layout_width="match_parent"
             android:layout_height="40dp"

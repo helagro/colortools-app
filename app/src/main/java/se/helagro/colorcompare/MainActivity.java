@@ -2,29 +2,22 @@
 
 package se.helagro.colorcompare;
 
+import static android.graphics.Color.alpha;
+
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Shader;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.Selection;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
-import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,30 +26,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.hlag.colorcompare.R;
+
+import java.util.ArrayList;
 
 import se.helagro.colorcompare.colorpicker.mAlphaSlider;
 import se.helagro.colorcompare.colorpicker.mColorPickerView;
 import se.helagro.colorcompare.colorpicker.mLightnessSlider;
 
-import java.util.ArrayList;
-
-import static android.graphics.Color.alpha;
-
-public class MainActivity extends AppCompatActivity implements LibDialog.LibColorPickedListener, mAlphaSlider.OnNewAlphaListener, PopupMenu.OnMenuItemClickListener, BillingHelper.BillingListener {
-    /*
-        starting overrides
-        ui methods
-        my implementation methods
-        helper methods
-        closing overrides
-     */
+public class MainActivity extends AppCompatActivity implements LibDialog.LibColorPickedListener, mAlphaSlider.OnNewAlphaListener, PopupMenu.OnMenuItemClickListener {
 
     private final static String TAG = "Color Activity";
     final static String DISPLAY_MODE_BTN_ID = "checkbtn_id_clr";
@@ -80,9 +59,6 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
     private mColorPickerView colorWheel;
     private RadioGroup displayOptGroup;
 
-    private TextView noAdsView;
-    private AdView adView;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
             attention_toast(getString(R.string.crash_apoligy));
         }
 
-        BillingHelper.getInstance(this);
         setupMenu();
 
         //setup views
@@ -183,73 +158,6 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
         colors = dbHelper.getColors();
     }
 
-
-    private boolean adsSetup = false;
-
-    @Override
-    public void setupAds() {
-        if (bought_premium || adsSetup) {
-            return;
-        }
-        adsSetup = true;
-
-        //No-ads view setup
-        noAdsView = findViewById(R.id.no_ads_premium_ads);
-        final SpannableStringBuilder ssb = new SpannableStringBuilder(getText(R.string.premium) + " ");
-        final Drawable d1 = ContextCompat.getDrawable(this, R.drawable.ic_no_ads_5);
-        final int wAndH = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 25, this.getResources().getDisplayMetrics());
-        d1.setBounds(0, 0, wAndH, wAndH);
-        ssb.setSpan(new ImageSpan(d1, ImageSpan.ALIGN_BASELINE), ssb.length() - 1, ssb.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-        noAdsView.setText(ssb, TextView.BufferType.SPANNABLE);
-        noAdsView.setOnClickListener(v -> buyPremium());
-
-        //ads view
-        MobileAds.initialize(getApplicationContext(), initializationStatus -> {
-
-        });
-        adView = findViewById(R.id.adView);
-        final AdRequest adRequest = new AdRequest.Builder().addTestDevice("924D31683A7863ECD8454901234999F4").build();
-        adView.loadAd(adRequest);
-        adView.setAdListener(new AdListener() {
-
-            @Override
-            public void onAdLoaded() {
-                noAdsView.setVisibility(View.GONE);
-                adView.setVisibility(View.VISIBLE);
-                super.onAdLoaded();
-            }
-
-            @Override
-            public void onAdFailedToLoad(int i) {
-                adView.setVisibility(View.GONE);
-                noAdsView.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-
-    public void disableAds() {
-        if (bought_premium) { //don't disable ads twice
-            return;
-        }
-
-        adsSetup = true;
-        bought_premium = true;
-
-        if (adView == null) {
-            adView = findViewById(R.id.adView);
-            noAdsView = findViewById(R.id.no_ads_premium_ads);
-        }
-        adView.setAdListener(null);
-        adView.destroy();
-
-        final ViewGroup parent = (ViewGroup) adView.getParent();
-        parent.removeView(adView);
-        root.removeView(noAdsView);
-        root.invalidate();
-    }
-
-
     private void setupMenu() {
         final ImageButton moreBtn = findViewById(R.id.more);
         final PopupMenu moreMenu = new PopupMenu(this, moreBtn);
@@ -298,36 +206,28 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.more_save:
-                if (savedColor == null) { //check from where it was made
-                    if (bought_premium || colors.size() < 8) {
-                        new NameDialog(this, currentColor, name -> {
-                            final Color color = new Color(name, currentColor, -1);
-                            dbHelper.updateColor(color);
-                            colors.add(0, color);
-                        });
-                    } else {
-                        attention_toast(getString(R.string.need_premium_for_space));
-                    }
+        if(item.getItemId() == R.id.more_save){
+            if (savedColor == null) { //check from where it was made
+                if (bought_premium || colors.size() < 8) {
+                    new NameDialog(this, currentColor, name -> {
+                        final Color color = new Color(name, currentColor, -1);
+                        dbHelper.updateColor(color);
+                        colors.add(0, color);
+                    });
                 } else {
-                    dbHelper.delColor(savedColor.id);
-                    colors.remove(savedColor);
+                    attention_toast(getString(R.string.need_premium_for_space));
                 }
-                break;
-            case R.id.more_save_lib:
-                new LibDialog(colors, currentColor, displayOptGroup.getCheckedRadioButtonId(), this).show(getSupportFragmentManager(), "LibDialog");
-                break;
-            case R.id.more_rate:
-                new ContactDialog(this).show();
-
-                break;
-            case R.id.more_ads:
-                buyPremium();
-                break;
-            case R.id.more_opt:
-                new SettingsDialog(currentColor).show(getSupportFragmentManager(), "MainAct");
-                break;
+            } else {
+                dbHelper.delColor(savedColor.id);
+                colors.remove(savedColor);
+            }
+        } else if(item.getItemId() == R.id.more_save_lib){
+            new LibDialog(colors, currentColor, displayOptGroup.getCheckedRadioButtonId(), this).show(getSupportFragmentManager(), "LibDialog");
+        } else if(item.getItemId() == R.id.more_rate){
+            new ContactDialog(this).show();
+        }
+        else if(item.getItemId() == R.id.more_opt){
+            new SettingsDialog(currentColor).show(getSupportFragmentManager(), "MainAct");
         }
 
         return true;
@@ -404,18 +304,6 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
     }
 
     @Override
-    public Activity getActivity() {
-        return this;
-    }
-
-    void buyPremium() {
-        final ArrayList<String> skuList = new ArrayList<>();
-        skuList.add("com.hlag.colorcompare.premium");
-        BillingHelper.getInstance(this).buy(skuList);
-    }
-
-
-    @Override
     public void onPause() {
         super.onPause();
         sp.edit().putInt("color_int", ((ColorDrawable) clrShowGroup.getChildAt(0).getBackground()).getColor()).apply();
@@ -440,10 +328,7 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
     protected void onDestroy() {
         super.onDestroy();
         DbHelper.getInstance(this).close();
-        disableAds();
-        BillingHelper.getInstance(this).close();
         bought_premium = false;
     }
-
 
 }

@@ -54,7 +54,6 @@ public class mColorPickerView extends View {
 
     private int alphaSliderViewId, lightnessSliderViewId;
 
-
     public mColorPickerView(Context context) {
         super(context);
         initWith(context, null);
@@ -248,7 +247,7 @@ public class mColorPickerView extends View {
 
         if (centerPoint == null) {
             centerPoint = new Point(getWidth() / 2, getHeight() / 2);
-            radius = getWidth() / 2 + 4;
+            radius = (float) getWidth() / 2 + 4;
         }
     }
 

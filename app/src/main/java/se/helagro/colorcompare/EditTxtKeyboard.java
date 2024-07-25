@@ -13,7 +13,6 @@ class EditTxtKeyboard extends AppCompatEditText {
         void onBackPressed();
     }
 
-    final static String TAG = "EditTxtKeyboard";
     OnBackPressedListener onBackPressedListener;
 
 

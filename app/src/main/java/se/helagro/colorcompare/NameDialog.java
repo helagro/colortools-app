@@ -20,7 +20,7 @@ public class NameDialog extends Dialog {
     }
 
     static final float LUMINANCE_THRESHOLD = 0.4f;
-    private OnNameEnteredListener onNameEnteredListener;
+    private final OnNameEnteredListener onNameEnteredListener;
     private int color;
 
     NameDialog(Context context, int color, OnNameEnteredListener onNameEnteredListener) {
@@ -35,10 +35,12 @@ public class NameDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.text_input_dialog);
-        final Window window = getWindow();
-        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
+        final Window window = getWindow();
+        if(window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        }
 
         final EditText editText = findViewById(R.id.name_dialog_edittext);
         editText.requestFocus();

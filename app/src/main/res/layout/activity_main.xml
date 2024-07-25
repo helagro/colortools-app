@@ -88,7 +88,7 @@
             app:lightnessSliderView="@+id/v_lightness_slider"
             app:wheelType="CIRCLE" />
 
-        <com.hlag.colorcompare.EditTxtKeyboard
+        <se.helagro.colorcompare.EditTxtKeyboard
             android:id="@+id/editText_color"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/main_textview_height"
@@ -141,28 +141,6 @@
                 android:text="INT" />
 
         </RadioGroup>
-
-        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/adView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:visibility="gone"
-            ads:adSize="SMART_BANNER"
-            ads:adUnitId="ca-app-pub-9859833199806227/1033388641" />
-
-
-        <TextView
-            android:id="@+id/no_ads_premium_ads"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="25sp"
-            android:visibility="gone"
-            android:textColor="@color/clr_opt_btn_background"
-            android:background="@color/no_ads_view_background"
-            android:gravity="center"
-            android:clickable="true"/>
 
     </LinearLayout>
 

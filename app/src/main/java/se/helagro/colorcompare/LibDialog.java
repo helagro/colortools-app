@@ -1,5 +1,6 @@
 package se.helagro.colorcompare;
 
+import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,9 +23,9 @@ public class LibDialog extends DialogFragment implements LibAdapter.OnColorClick
     }
 
     static final String TAG = "LibDialog";
-    private ArrayList<Color> colors;
-    private int currentColor;
-    private int checkedId;
+    private final ArrayList<Color> colors;
+    private final int currentColor;
+    private final int checkedId;
     private LibColorPickedListener libColorPickedListener;
 
     LibDialog(@NonNull ArrayList<Color> colors, int currentColor, int checkedId, LibColorPickedListener libColorPickedListener) {
@@ -47,10 +48,15 @@ public class LibDialog extends DialogFragment implements LibAdapter.OnColorClick
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.color_lib_dialog, container, false);
 
-        final Window window = getDialog().getWindow();
-        window.setBackgroundDrawable(new ColorDrawable(-1291845632));
-        window.setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        final Dialog dialog = getDialog();
+        if (dialog != null) {
+            final Window window = dialog.getWindow();
+            if (window != null){
+                window.setBackgroundDrawable(new ColorDrawable(-1291845632));
+                window.setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+            }
+        }
 
 
         final LibGridView gridView = v.findViewById(R.id.dialog_gridview);
@@ -74,7 +80,6 @@ public class LibDialog extends DialogFragment implements LibAdapter.OnColorClick
     public void onPause() {
         super.onPause();
         MyApp.hideKeyboardFrom(getContext(), getView().getRootView());
-
     }
 
     @Override

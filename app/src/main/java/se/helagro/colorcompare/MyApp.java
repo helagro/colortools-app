@@ -18,7 +18,7 @@ public class MyApp extends Application {
     static final String SP_CRASHED = "crashed";
 
     private Thread.UncaughtExceptionHandler defaultUEH;
-    private Thread.UncaughtExceptionHandler _unCaughtExceptionHandler = (thread, ex) -> {
+    private final Thread.UncaughtExceptionHandler _unCaughtExceptionHandler = (thread, ex) -> {
 
         SharedPreferences.Editor sp_edit = getSp(this).edit();
         if(getSp(this).getBoolean(SP_CRASHED, false)){ // should fix back to back crash
@@ -37,12 +37,17 @@ public class MyApp extends Application {
         defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(_unCaughtExceptionHandler);
 
-        if(getSp(getApplicationContext()).getBoolean("first", true)){ //called also after crash - ok
-            getApplicationContext().openOrCreateDatabase(DbHelper.DB_NAME, MODE_PRIVATE, null)
-                    .execSQL("CREATE TABLE IF NOT EXISTS "+ DbHelper.TABLE_NAME +" (id INTEGER primary key, name TEXT, color INTEGER, updated INTEGER)");
+        Context context = getApplicationContext();
 
-            getSp(getApplicationContext()).edit().putBoolean("first", false).apply();
+        try( android.database.sqlite.SQLiteDatabase db = context.openOrCreateDatabase(DbHelper.DB_NAME, MODE_PRIVATE, null)) {
+            if(getSp(getApplicationContext()).getBoolean("first", true)){ //called also after crash - ok
+                db.execSQL("CREATE TABLE IF NOT EXISTS "+ DbHelper.TABLE_NAME +" (id INTEGER primary key, name TEXT, color INTEGER, updated INTEGER)");
+                getSp(getApplicationContext()).edit().putBoolean("first", false).apply();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
         }
+
 
     }
 

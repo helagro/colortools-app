@@ -38,13 +38,13 @@ class LibAdapter extends ArrayAdapter<Color> {
     static final private String TAG = "LibAdapter";
 
     //from init
-    private DbHelper dbHelper;
-    private TileDrawable tileDrawable;
-    private OnColorClickedListener onColorClickedListener;
-    private ArrayList<Color> colors;
-    private int currentColor;
+    private final DbHelper dbHelper;
+    private final TileDrawable tileDrawable;
+    private final OnColorClickedListener onColorClickedListener;
+    private final ArrayList<Color> colors;
+    private final int currentColor;
     private final LayerDrawable currentColorDraw;
-    private int checkedId;
+    private final int checkedId;
 
     //for cursor jump
     private int selectedPos = -1;
@@ -168,7 +168,7 @@ class LibAdapter extends ArrayAdapter<Color> {
         viewHolder.colorDisplay.setBackgroundColor(color);
         viewHolder.colorEdit.setText(ColorIntToString(checkedId, color));
 
-        color = color | 0xFF000000;
+        color = color | 0xFF000000; // Set alpha to full
 
         viewHolder.nameEdit.setTextColor(color);
         viewHolder.colorEdit.setTextColor(color);
@@ -188,17 +188,16 @@ class LibAdapter extends ArrayAdapter<Color> {
         updateColorItem.setIcon(currentColorDraw);
 
         popupMenu.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.delete_color:
-                    dbHelper.delColor(color.id);
-                    colors.remove(color);
-                    notifyDataSetChanged();
-                    break;
-                case R.id.update_color:
-                    color.color = currentColor;
-                    setViewColors(color.color, viewHolder);
-                    dbHelper.updateColor(color);
+            if(item.getItemId() == R.id.delete_color) {
+                dbHelper.delColor(color.id);
+                colors.remove(color);
+                notifyDataSetChanged();
+            } else if (item.getItemId() == R.id.update_color) {
+                color.color = currentColor;
+                setViewColors(color.color, viewHolder);
+                dbHelper.updateColor(color);
             }
+
             return true;
         });
 
