@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.flask.colorpicker.ColorCircle;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorChangedListener;
@@ -137,50 +139,45 @@ public class mColorPickerView extends View {
 
         if (renderer == null) return;
 
-        float half = colorWheelCanvas.getWidth() / 2f;
-        float strokeWidth = STROKE_RATIO * (1f + ColorWheelRenderer.GAP_PERCENTAGE);
-        float maxRadius = half - strokeWidth - half / density;
-        float cSize = maxRadius / (density - 1) / 2;
+        final float half = colorWheelCanvas.getWidth() / 2f;
+        final float strokeWidth = STROKE_RATIO * (1f + ColorWheelRenderer.GAP_PERCENTAGE);
+        final float maxRadius = half - strokeWidth - half / density;
+        final float cSize = maxRadius / (density - 1) / 2;
 
-        final ColorWheelRenderOption colorWheelRenderOption = renderer.getRenderOption();
-        colorWheelRenderOption.density = this.density;
-        colorWheelRenderOption.maxRadius = maxRadius;
-        colorWheelRenderOption.cSize = cSize;
-        colorWheelRenderOption.strokeWidth = strokeWidth;
-        colorWheelRenderOption.alpha = alpha;
-        colorWheelRenderOption.lightness = lightness;
-        colorWheelRenderOption.targetCanvas = colorWheelCanvas;
+        final ColorWheelRenderOption renderOption = renderer.getRenderOption();
+        renderOption.density = this.density;
+        renderOption.maxRadius = maxRadius;
+        renderOption.cSize = cSize;
+        renderOption.strokeWidth = strokeWidth;
+        renderOption.alpha = alpha;
+        renderOption.lightness = lightness;
+        renderOption.targetCanvas = colorWheelCanvas;
 
-        renderer.initWith(colorWheelRenderOption);
+        renderer.initWith(renderOption);
         renderer.draw();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int width = 0;
-        if (widthMode == MeasureSpec.UNSPECIFIED)
-            width = widthMeasureSpec;
-        else if (widthMode == MeasureSpec.AT_MOST)
-            width = MeasureSpec.getSize(widthMeasureSpec);
-        else if (widthMode == MeasureSpec.EXACTLY)
-            width = MeasureSpec.getSize(widthMeasureSpec);
 
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int height = 0;
-        if (heightMode == MeasureSpec.UNSPECIFIED)
-            height = widthMeasureSpec;
-        else if (heightMode == MeasureSpec.AT_MOST)
-            height = MeasureSpec.getSize(heightMeasureSpec);
-        else if (widthMode == MeasureSpec.EXACTLY)
-            height = MeasureSpec.getSize(heightMeasureSpec);
-        int squareDimen = width;
-        if (height < width)
-            squareDimen = height;
+        final int width = getDimension(widthMeasureSpec);
+        final int height = getDimension(heightMeasureSpec);
+        final int squareDimen = Math.min(height, width);
+
         setMeasuredDimension(squareDimen, squareDimen);
     }
 
+    private int getDimension(int measureSpec) {
+        final int mode = MeasureSpec.getMode(measureSpec);
+
+        if (mode == MeasureSpec.UNSPECIFIED)
+            return measureSpec;
+        else if (mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY)
+            return MeasureSpec.getSize(measureSpec);
+
+        return 0;
+    }
 
     private boolean isOutsideCircle(Point touchedPoint) {
         final int distance = (int) Math.round(Math.pow(touchedPoint.x - centerPoint.x, 2) + Math.pow(touchedPoint.y - centerPoint.y, 2));
@@ -219,15 +216,13 @@ public class mColorPickerView extends View {
             for (OnColorChangedListener listener : colorChangedListeners) {
                 try {
                     listener.onColorChanged(newColor);
-                } catch (Exception e) {
-                    //Squash individual listener exceptions
-                }
+                } catch (Exception ignored) { }
             }
         }
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         final int backgroundColor = 0x00000000;
         canvas.drawColor(backgroundColor);
@@ -236,8 +231,10 @@ public class mColorPickerView extends View {
         if (currentColorCircle != null) {
             final float maxRadius = canvas.getWidth() / 2f - STROKE_RATIO * (1f + ColorWheelRenderer.GAP_PERCENTAGE);
             final float size = maxRadius / density / 2;
+
             colorWheelFill.setColor(android.graphics.Color.HSVToColor(currentColorCircle.getHsvWithLightness(this.lightness)));
             colorWheelFill.setAlpha((int) (alpha * 0xff));
+
             canvas.drawCircle(currentColorCircle.getX(), currentColorCircle.getY(), size * STROKE_RATIO, selectorStroke1);
             canvas.drawCircle(currentColorCircle.getX(), currentColorCircle.getY(), size * (1 + (STROKE_RATIO - 1) / 2), selectorStroke2);
 

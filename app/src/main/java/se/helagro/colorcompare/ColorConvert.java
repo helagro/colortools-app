@@ -11,11 +11,11 @@ import static android.graphics.Color.red;
 
 import com.hlag.colorcompare.R;
 
-class ColorConvert {
+public class ColorConvert {
     private static final String TAG = "ColorConvert";
     private static final float ERR_CODE = 0.1f;
 
-    static String ColorIntToString(int selectedId, int color) {
+    public static String ColorIntToString(final int selectedId, final int color) {
         if (selectedId == R.id.color_hex_btn)
             return isOpaque(color) ? String.format("#%06X", (0xFFFFFF & color)) : String.format("#%08X", color);
 
@@ -32,36 +32,30 @@ class ColorConvert {
 
         else
             return "No mode selected, please restart the app";
-
     }
 
-    private static String getAlpha(int color, boolean first) {
+    private static String getAlpha(final int color, final boolean first) {
         if (!isOpaque(color) && first == MainActivity.is_argb) {
             final int alpha = alpha(color);
             final String alphaString = MainActivity.byte_alpha ? Integer.toString(alpha)
                     : String.format(Locale.US, "%.2f", alpha / 255f);
 
-            if (MainActivity.is_argb) {
-                return alphaString + " ";
-            } else {
-                return " " + alphaString;
-            }
-        }
-
-        return "";
+            return MainActivity.byte_alpha ? alphaString + " " : " " + alphaString;
+        } else
+            return "";
     }
 
-    static boolean isOpaque(int color) {
+    static boolean isOpaque(final int color) {
         return alpha(color) == 255;
     }
 
-    static double ColorIntFromString(String colorString) {
+    public static double ColorIntFromString(String colorString) {
         int color;
         try {
             if (colorString.startsWith("#")) { // hex
-                if (colorString.length() < 7) {
+                if (colorString.length() < 7)
                     colorString = colorString.replaceAll("([0-9a-fA-F])", "$1$1");
-                }
+
                 color = parseColor(colorString);
             } else if (colorString.contains(" ")) { // rgb / argb / rgba
                 final String[] colorStrings = colorString.split(" ");
@@ -72,7 +66,7 @@ class ColorConvert {
                 if (colorStrings.length == 4) { // alpha entered
                     float alpha;
 
-                    // yoinks alpha value
+                    // Yoinks alpha value
                     if (MainActivity.is_argb) {
                         alpha = Float.parseFloat(colorStrings[0]);
                         stringI = 1;
@@ -81,7 +75,7 @@ class ColorConvert {
                     }
 
                     if (alpha % 1 != 0)
-                        alpha = alpha * 255;
+                        alpha *= 255;
 
                     alphaInt = Math.round(alpha);
                     if (badRgbValue(alphaInt))
@@ -109,11 +103,11 @@ class ColorConvert {
         }
     }
 
-    private static boolean badRgbValue(int value) {
+    private static boolean badRgbValue(final int value) {
         return value > 255 || value < 0;
     }
 
-    static boolean noErr(double color) {
+    public static boolean noErr(final double color) {
         return color % 1 == 0;
     }
 

@@ -14,43 +14,22 @@ import java.util.Locale;
 public class MyApp extends Application {
 
     static final String TAG = "MyApp";
-    static final String SP_RATED = "rated";
-    static final String SP_CRASHED = "crashed";
-
-    private Thread.UncaughtExceptionHandler defaultUEH;
-    private final Thread.UncaughtExceptionHandler _unCaughtExceptionHandler = (thread, ex) -> {
-
-        SharedPreferences.Editor sp_edit = getSp(this).edit();
-        if(getSp(this).getBoolean(SP_CRASHED, false)){ // should fix back to back crash
-            sp_edit.clear().apply();
-        }
-        sp_edit.putBoolean(SP_CRASHED, true).apply();
-
-        defaultUEH.uncaughtException(thread, ex);
-    };
-
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
-        Thread.setDefaultUncaughtExceptionHandler(_unCaughtExceptionHandler);
-
         Context context = getApplicationContext();
 
         try( android.database.sqlite.SQLiteDatabase db = context.openOrCreateDatabase(DbHelper.DB_NAME, MODE_PRIVATE, null)) {
-            if(getSp(getApplicationContext()).getBoolean("first", true)){ //called also after crash - ok
+            if(getSp(getApplicationContext()).getBoolean("first", true)){ // called also after crash - ok
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+ DbHelper.TABLE_NAME +" (id INTEGER primary key, name TEXT, color INTEGER, updated INTEGER)");
                 getSp(getApplicationContext()).edit().putBoolean("first", false).apply();
             }
         } catch (Exception e){
             e.printStackTrace();
         }
-
-
     }
-
 
     static SharedPreferences getSp(Context context){
         return context.getSharedPreferences("default_preferences", Activity.MODE_PRIVATE);
@@ -62,23 +41,19 @@ public class MyApp extends Application {
                 directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC;
     }
 
-
-    public static int dpToPx(Context context, int dip) {
+    public static int dpToPx(final Context context, final int dip) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }
 
-    public static int pxToDp(int px, Context context){
+    public static int pxToDp(final int px, final Context context){
         return px / (context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
-    public static void hideKeyboardFrom(Context context, View view) {
-        if(view == null){
-            return;
-        }
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+    public static void hideKeyboardFrom(final Context context, final View view) {
+        if (view == null) return;
+
+        final InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-
-
 
 }

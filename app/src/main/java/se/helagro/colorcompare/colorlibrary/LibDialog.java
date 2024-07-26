@@ -1,4 +1,4 @@
-package se.helagro.colorcompare;
+package se.helagro.colorcompare.colorlibrary;
 
 import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
@@ -17,8 +17,11 @@ import com.hlag.colorcompare.R;
 
 import java.util.ArrayList;
 
+import se.helagro.colorcompare.Color;
+import se.helagro.colorcompare.MyApp;
+
 public class LibDialog extends DialogFragment implements LibAdapter.OnColorClickedListener {
-    interface LibColorPickedListener {
+    public interface LibColorPickedListener {
         void onInputColor(int color);
     }
 
@@ -28,7 +31,7 @@ public class LibDialog extends DialogFragment implements LibAdapter.OnColorClick
     private final int checkedId;
     private LibColorPickedListener libColorPickedListener;
 
-    LibDialog(@NonNull ArrayList<Color> colors, int currentColor, int checkedId, LibColorPickedListener libColorPickedListener) {
+    public LibDialog(@NonNull ArrayList<Color> colors, int currentColor, int checkedId, LibColorPickedListener libColorPickedListener) {
         this.colors = colors;
         this.currentColor = currentColor;
         this.checkedId = checkedId;
@@ -79,7 +82,10 @@ public class LibDialog extends DialogFragment implements LibAdapter.OnColorClick
     @Override
     public void onPause() {
         super.onPause();
-        MyApp.hideKeyboardFrom(getContext(), getView().getRootView());
+
+        View view = getView();
+        if (view != null)
+            MyApp.hideKeyboardFrom(getContext(), view.getRootView());
     }
 
     @Override

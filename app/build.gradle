@@ -28,6 +28,7 @@ android {
     lintOptions {
         disable 'RestrictedApi'
     }
+    namespace 'com.hlag.colorcompare'
 }
 
 dependencies {

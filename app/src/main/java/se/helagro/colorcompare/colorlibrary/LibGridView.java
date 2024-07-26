@@ -1,4 +1,4 @@
-package se.helagro.colorcompare;
+package se.helagro.colorcompare.colorlibrary;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.GridView;
 
 import java.util.Calendar;
+
+import se.helagro.colorcompare.EditTxtKeyboard;
+import se.helagro.colorcompare.MyApp;
 
 public class LibGridView extends GridView {
 
@@ -47,11 +50,12 @@ public class LibGridView extends GridView {
                 startCoords[0] = event.getX();
                 startCoords[1] = event.getY();
                 break;
+
             case MotionEvent.ACTION_UP:
                 if (Calendar.getInstance().getTimeInMillis() - startClickTime < MAX_CLICK_DURATION &&
                         pointToPosition((int) event.getX(), (int) event.getY()) == -1) {
 
-                    View focusChild = getFocusedChild();
+                    final View focusChild = getFocusedChild();
                     if (focusChild != null && focusChild.findFocus() instanceof EditTxtKeyboard) {
                         ((EditTxtKeyboard) focusChild.findFocus()).removeFocus();
                     } else {

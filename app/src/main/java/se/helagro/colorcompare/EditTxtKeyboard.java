@@ -7,13 +7,13 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.widget.AppCompatEditText;
 
-class EditTxtKeyboard extends AppCompatEditText {
+public class EditTxtKeyboard extends AppCompatEditText {
 
-    interface OnBackPressedListener {
+    public interface OnBackPressedListener {
         void onBackPressed();
     }
 
-    OnBackPressedListener onBackPressedListener;
+    private OnBackPressedListener onBackPressedListener;
 
 
     public EditTxtKeyboard(Context context) {
@@ -28,7 +28,7 @@ class EditTxtKeyboard extends AppCompatEditText {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
+    public void setOnBackPressedListener(final OnBackPressedListener onBackPressedListener) {
         this.onBackPressedListener = onBackPressedListener;
     }
 
@@ -36,9 +36,8 @@ class EditTxtKeyboard extends AppCompatEditText {
     public boolean onKeyPreIme(int keyCode, KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             clearFocus();
-            if (onBackPressedListener != null) {
+            if (onBackPressedListener != null)
                 onBackPressedListener.onBackPressed();
-            }
         }
         return false;
     }

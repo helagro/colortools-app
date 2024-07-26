@@ -19,11 +19,11 @@ public class NameDialog extends Dialog {
         void onNameEntered(String name);
     }
 
-    static final float LUMINANCE_THRESHOLD = 0.4f;
+    public static final float LUMINANCE_THRESHOLD = 0.4f;
     private final OnNameEnteredListener onNameEnteredListener;
     private int color;
 
-    NameDialog(Context context, int color, OnNameEnteredListener onNameEnteredListener) {
+    NameDialog(final Context context, int color, final OnNameEnteredListener onNameEnteredListener) {
         super(context);
         this.onNameEnteredListener = onNameEnteredListener;
         this.color = color;
@@ -53,7 +53,7 @@ public class NameDialog extends Dialog {
 
             findViewById(R.id.name_dialog_grid).setBackgroundTintList((ColorStateList.valueOf(-10066330)));
 
-            ColorStateList tint = ColorStateList.valueOf(-6974059);
+            final ColorStateList tint = ColorStateList.valueOf(-6974059);
             doneBtn.setBackgroundTintList(tint);
             cancelBtn.setBackgroundTintList(tint);
         }

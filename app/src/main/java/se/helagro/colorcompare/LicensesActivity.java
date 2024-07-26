@@ -26,7 +26,7 @@ public class LicensesActivity extends AppCompatActivity {
         try {
             Resources res = getResources();
             InputStream in_s = res.openRawResource(R.raw.quadflask_license);
-            byte[] b = new byte[in_s.available()];
+            final byte[] b = new byte[in_s.available()];
             in_s.read(b);
             in_s.close();
             textView.setText(new String(b));

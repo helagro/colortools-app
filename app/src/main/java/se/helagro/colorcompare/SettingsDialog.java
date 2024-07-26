@@ -44,7 +44,11 @@ public class SettingsDialog extends DialogFragment implements CompoundButton.OnC
         final View v = inflater.inflate(R.layout.settings_dialog, container, false);
 
         final Spinner dark_mode_opt = v.findViewById(R.id.dark_mode_opt);
-        final ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(getContext(), R.array.dark_mode_options, android.R.layout.simple_spinner_item);
+        final ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(
+                getContext(),
+                R.array.dark_mode_options,
+                android.R.layout.simple_spinner_item
+        );
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dark_mode_opt.setAdapter(arrayAdapter);
 
@@ -83,15 +87,13 @@ public class SettingsDialog extends DialogFragment implements CompoundButton.OnC
         byte_alpha.setOnCheckedChangeListener(this);
         float_alpha.setOnCheckedChangeListener(this);
 
-
         v.findViewById(R.id.opt_colorpicker).setOnClickListener(view -> {
             Intent licenseIntent = new Intent(getContext(), LicensesActivity.class);
             licenseIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
             Activity activity = getActivity();
-            if (activity != null){
+            if (activity != null)
                 activity.startActivity(licenseIntent);
-            }
         });
 
 

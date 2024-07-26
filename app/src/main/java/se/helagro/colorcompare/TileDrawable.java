@@ -18,7 +18,7 @@ public class TileDrawable extends Drawable {
 
     private final Paint paint;
 
-    TileDrawable(Drawable drawable, Shader.TileMode tileMode) {
+    public TileDrawable(Drawable drawable, Shader.TileMode tileMode) {
         paint = new Paint();
         paint.setShader(new BitmapShader(getBitmap(drawable), tileMode, tileMode));
     }
@@ -46,6 +46,7 @@ public class TileDrawable extends Drawable {
     private Bitmap getBitmap(Drawable drawable) {
         if (drawable instanceof BitmapDrawable)
             return ((BitmapDrawable) drawable).getBitmap();
+
         final Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.RGB_565);
         final Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());

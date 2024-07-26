@@ -1,10 +1,13 @@
-package se.helagro.colorcompare;
+package se.helagro.colorcompare.colorlibrary;
 
 import android.view.View;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-class ColorViewHolder{
+import se.helagro.colorcompare.Color;
+import se.helagro.colorcompare.EditTxtKeyboard;
+
+public class ColorViewHolder {
     View colorDisplay;
     ConstraintLayout infoOverlay;
     EditTxtKeyboard nameEdit;
