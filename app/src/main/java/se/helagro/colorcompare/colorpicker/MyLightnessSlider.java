@@ -10,26 +10,26 @@ import com.flask.colorpicker.Utils;
 import com.flask.colorpicker.builder.PaintBuilder;
 import se.helagro.colorcompare.MyApp;
 
-public class mLightnessSlider extends mAbsCustomSlider {
+public class MyLightnessSlider extends MyAbsCustomSlider {
 
     private int color;
     private final Paint solid = PaintBuilder.newPaint().build();
     private final Paint barPaint = PaintBuilder.newPaint().build();
     private final Paint innerClearingStroke = PaintBuilder.newPaint().color(0xff000000).build();
     private final Paint clearingStroke = PaintBuilder.newPaint().color(0xff555555).build();
-    private mColorPickerView colorPicker;
+    private MyColorPickerView colorPicker;
 
-    public mLightnessSlider(Context context) {
+    public MyLightnessSlider(Context context) {
         super(context);
         defConstructor();
     }
 
-    public mLightnessSlider(Context context, AttributeSet attrs) {
+    public MyLightnessSlider(Context context, AttributeSet attrs) {
         super(context, attrs);
         defConstructor();
     }
 
-    public mLightnessSlider(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MyLightnessSlider(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         defConstructor();
     }
@@ -74,7 +74,7 @@ public class mLightnessSlider extends mAbsCustomSlider {
     }
 
 
-    public void setColorPicker(mColorPickerView colorPicker) {
+    public void setColorPicker(MyColorPickerView colorPicker) {
         this.colorPicker = colorPicker;
     }
 

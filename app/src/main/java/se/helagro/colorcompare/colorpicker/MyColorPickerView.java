@@ -25,7 +25,7 @@ import com.hlag.colorcompare.R;
 
 import java.util.ArrayList;
 
-public class mColorPickerView extends View {
+public class MyColorPickerView extends View {
     static final String TAG = "mColorView";
     private Point centerPoint;
     private float radius;
@@ -48,25 +48,25 @@ public class mColorPickerView extends View {
 
     private final ArrayList<OnColorChangedListener> colorChangedListeners = new ArrayList<>();
 
-    private mLightnessSlider mLightnessSlider;
-    private mAlphaSlider mAlphaSlider;
+    private MyLightnessSlider mLightnessSlider;
+    private MyAlphaSlider mAlphaSlider;
 
 
     private ColorWheelRenderer renderer;
 
     private int alphaSliderViewId, lightnessSliderViewId;
 
-    public mColorPickerView(Context context) {
+    public MyColorPickerView(Context context) {
         super(context);
         initWith(context, null);
     }
 
-    public mColorPickerView(Context context, AttributeSet attrs) {
+    public MyColorPickerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initWith(context, attrs);
     }
 
-    public mColorPickerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MyColorPickerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initWith(context, attrs);
     }
@@ -343,7 +343,7 @@ public class mColorPickerView extends View {
         this.colorChangedListeners.add(listener);
     }
 
-    public void setmLightnessSlider(mLightnessSlider mLightnessSlider) {
+    public void setmLightnessSlider(MyLightnessSlider mLightnessSlider) {
 
         this.mLightnessSlider = mLightnessSlider;
         if (mLightnessSlider != null) {
@@ -352,7 +352,7 @@ public class mColorPickerView extends View {
         }
     }
 
-    public void setmAlphaSlider(mAlphaSlider mAlphaSlider) {
+    public void setmAlphaSlider(MyAlphaSlider mAlphaSlider) {
         this.mAlphaSlider = mAlphaSlider;
         if (mAlphaSlider != null) {
             this.mAlphaSlider.setColorPicker(this);

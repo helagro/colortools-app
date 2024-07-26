@@ -31,7 +31,7 @@
 
     </RadioGroup>
 
-    <se.helagro.colorcompare.colorpicker.mAlphaSlider
+    <se.helagro.colorcompare.colorpicker.MyAlphaSlider
         android:id="@+id/alpha_slider"
         android:layout_width="120dp"
         android:layout_height="32dp"
@@ -71,7 +71,7 @@
             android:layout_marginTop="15dp"/>
 
 
-        <se.helagro.colorcompare.colorpicker.mColorPickerView
+        <se.helagro.colorcompare.colorpicker.MyColorPickerView
             android:id="@+id/color_picker_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -105,7 +105,7 @@
             android:textSize="@dimen/clr_i_u_text_size"
             />
 
-        <se.helagro.colorcompare.colorpicker.mLightnessSlider
+        <se.helagro.colorcompare.colorpicker.MyLightnessSlider
             android:id="@+id/v_lightness_slider"
             android:layout_width="match_parent"
             android:layout_height="32dp"

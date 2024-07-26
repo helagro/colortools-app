@@ -32,20 +32,21 @@ import com.hlag.colorcompare.R;
 import java.util.ArrayList;
 
 import se.helagro.colorcompare.colorlibrary.LibDialog;
-import se.helagro.colorcompare.colorpicker.mAlphaSlider;
-import se.helagro.colorcompare.colorpicker.mColorPickerView;
-import se.helagro.colorcompare.colorpicker.mLightnessSlider;
+import se.helagro.colorcompare.colorpicker.MyAlphaSlider;
+import se.helagro.colorcompare.colorpicker.MyColorPickerView;
+import se.helagro.colorcompare.colorpicker.MyLightnessSlider;
 
-public class MainActivity extends AppCompatActivity implements LibDialog.LibColorPickedListener, mAlphaSlider.OnNewAlphaListener, PopupMenu.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity implements LibDialog.LibColorPickedListener, MyAlphaSlider.OnNewAlphaListener, PopupMenu.OnMenuItemClickListener {
 
     private final static String TAG = "Color Activity";
     final static String DISPLAY_MODE_BTN_ID = "checkbtn_id_clr";
 
-    private SharedPreferences sp;
-    private DbHelper dbHelper;
     protected static boolean is_argb;
     protected static boolean byte_alpha;
     protected static int nightMode;
+
+    private SharedPreferences sp;
+    private DbHelper dbHelper;
     private boolean dimAllowed = true;
 
     private ArrayList<Color> colors;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
     private FrameLayout root;
     private RadioGroup clrShowGroup;
     private EditTxtKeyboard colorText;
-    private mColorPickerView colorWheel;
+    private MyColorPickerView colorWheel;
     private RadioGroup displayOptGroup;
 
 
@@ -75,18 +76,20 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
         setupMenu();
 
         // Setup views
+        final ImageButton arrow = findViewById(R.id.clr_arrow);
+        final MyLightnessSlider mBarLightness = findViewById(R.id.v_lightness_slider);
+        final MyAlphaSlider mBarAlpha = findViewById(R.id.alpha_slider);
+
+        colorWheel = findViewById(R.id.color_picker_view);
+        colorText = findViewById(R.id.editText_color);
+        displayOptGroup = findViewById(R.id.color_radiogroup);
         clrShowGroup = findViewById(R.id.clr_show_group);
+
         clrShowGroup.setBackground(
             new TileDrawable(
                 AppCompatResources.getDrawable(this, R.drawable.checkered_pattern),
                 Shader.TileMode.REPEAT)
         );
-        final ImageButton arrow = findViewById(R.id.clr_arrow);
-        colorWheel = findViewById(R.id.color_picker_view);
-        colorText = findViewById(R.id.editText_color);
-        final mLightnessSlider mBarLightness = findViewById(R.id.v_lightness_slider);
-        final mAlphaSlider mBarAlpha = findViewById(R.id.alpha_slider);
-        displayOptGroup = findViewById(R.id.color_radiogroup);
 
         mBarAlpha.setOnNewAlphaListener(this);
         colorText.setOnBackPressedListener(this::updateClrText);
@@ -111,22 +114,15 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
         colorText.setOnEditorActionListener(
             (textView, i, keyEvent) -> {
                 final double color = ColorConvert.ColorIntFromString(textView.getText().toString());
+
                 if (ColorConvert.noErr(color)) {
                     onInputColor((int) color);
                 } else {
-                    if (textView.getText().toString().equals("crash_and_reset")) {
-                        throw new NullPointerException();
-                    }
                     attention_toast(getString(R.string.non_valid_color_input));
                     updateClrText();
                 }
                 return false;
             });
-
-        colorText.setOnLongClickListener(v -> {
-            colorText.selectAll();
-            return false;
-        });
 
         displayOptGroup.setOnCheckedChangeListener((radioGroup, id) -> {
             updateClrText();
@@ -189,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
                     break;
                 }
             }
+
             if (savedColor == null) {
                 saveItem.setIcon(R.drawable.ic_save);
                 saveItem.setTitle(R.string.save);
@@ -202,8 +199,8 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        if(item.getItemId() == R.id.more_save){
-            if (savedColor == null) { //check from where it was made
+        if(item.getItemId() == R.id.more_save) {
+            if (savedColor == null) { // check from where it was made
                 new NameDialog(this, currentColor, name -> {
                     final Color color = new Color(name, currentColor, -1);
                     dbHelper.updateColor(color);
@@ -214,12 +211,12 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
                 colors.remove(savedColor);
             }
 
-        } else if(item.getItemId() == R.id.more_save_lib){
+        } else if (item.getItemId() == R.id.more_save_lib) {
             new LibDialog(colors, currentColor, displayOptGroup.getCheckedRadioButtonId(), this)
                     .show(getSupportFragmentManager(), "LibDialog");
         }
 
-        else if(item.getItemId() == R.id.more_opt){
+        else if (item.getItemId() == R.id.more_opt) {
             new SettingsDialog(currentColor).show(getSupportFragmentManager(), "MainAct");
         }
 
@@ -282,12 +279,11 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
     }
 
     private void lighten() {
-        if (dimAllowed) {
-            try {
-                root.animate().alpha(1f).setDuration(500);
-            } catch (Exception ignored) {
-            }
-        }
+        if (!dimAllowed) return;
+
+        try {
+            root.animate().alpha(1f).setDuration(500);
+        } catch (Exception ignored) { }
     }
 
     @Override

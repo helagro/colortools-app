@@ -10,7 +10,7 @@ import com.flask.colorpicker.builder.PaintBuilder;
 import se.helagro.colorcompare.MyApp;
 import com.hlag.colorcompare.R;
 
-public class mAlphaSlider extends mAbsCustomSlider {
+public class MyAlphaSlider extends MyAbsCustomSlider {
 
     public interface OnNewAlphaListener {
         void onNewAlpha(float alpha);
@@ -22,17 +22,17 @@ public class mAlphaSlider extends mAbsCustomSlider {
     private final Paint barPaint = PaintBuilder.newPaint().build();
     private final Paint solid = PaintBuilder.newPaint().build();
     private final Paint clearingStroke = PaintBuilder.newPaint().color(0xffaaaaaa).build(); 
-    private mColorPickerView colorPicker;
+    private MyColorPickerView colorPicker;
 
-    public mAlphaSlider(Context context) {
+    public MyAlphaSlider(Context context) {
         super(context);
     }
 
-    public mAlphaSlider(Context context, AttributeSet attrs) {
+    public MyAlphaSlider(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public mAlphaSlider(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MyAlphaSlider(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -89,7 +89,7 @@ public class mAlphaSlider extends mAbsCustomSlider {
         canvas.drawCircle(x, y, handleRadius * 0.75f, solid);
     }
 
-    public void setColorPicker(mColorPickerView colorPicker) {
+    public void setColorPicker(MyColorPickerView colorPicker) {
         this.colorPicker = colorPicker;
     }
 

@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import com.flask.colorpicker.slider.OnValueChangedListener;
 import com.hlag.colorcompare.R;
 
-public abstract class mAbsCustomSlider extends View {
+public abstract class MyAbsCustomSlider extends View {
     protected Bitmap bitmap;
     protected Canvas bitmapCanvas;
     protected Bitmap bar;
@@ -25,15 +25,15 @@ public abstract class mAbsCustomSlider extends View {
     protected int barHeight = 5;
     protected float value = 1;
 
-    public mAbsCustomSlider(Context context) {
+    public MyAbsCustomSlider(Context context) {
         super(context);
     }
 
-    public mAbsCustomSlider(Context context, AttributeSet attrs) {
+    public MyAbsCustomSlider(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public mAbsCustomSlider(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MyAbsCustomSlider(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
