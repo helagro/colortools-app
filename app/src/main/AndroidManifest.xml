@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.hlag.colorcompare"
-    >
-
-    <!--testing 6-->
-    
-    <uses-permission android:name="com.android.vending.BILLING"/>
-    <uses-feature android:name="android.hardware.faketouch"/>
-    <uses-feature android:required="false" android:name="android.hardware.touchscreen"/>
+    xmlns:tools="http://schemas.android.com/tools">
 
     <dist:module dist:instant="true" />
-
 
     <application
         android:hardwareAccelerated="true"
@@ -22,13 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name="com.hlag.colorcompare.MyApp"
+        android:name="se.helagro.colorcompare.MyApp"
         tools:ignore="GoogleAppIndexingWarning">
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-9859833199806227~4987562631"/>
 
-        <activity android:name="com.hlag.colorcompare.SplashActivity"
+        <activity android:name="se.helagro.colorcompare.SplashActivity"
+            android:exported="true"
             android:theme="@style/SplashTheme"
             android:launchMode= "singleTask"
             >
@@ -38,13 +27,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.hlag.colorcompare.MainActivity"
-            android:screenOrientation="portrait"
+        <activity android:name="se.helagro.colorcompare.MainActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
             android:launchMode= "singleTask"
             >
         </activity>
-        <activity android:name=".LicensesActivity"
+        <activity android:name="se.helagro.colorcompare.LicensesActivity"
             android:launchMode= "singleTask"/>
 
     </application>
