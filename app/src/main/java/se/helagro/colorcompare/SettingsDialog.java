@@ -21,7 +21,7 @@ import com.hlag.colorcompare.R;
 
 public class SettingsDialog extends DialogFragment implements CompoundButton.OnCheckedChangeListener {
 
-    SettingsDialog(int color) {
+    SettingsDialog(final int color) {
         this.color = color;
     }
 
@@ -40,15 +40,15 @@ public class SettingsDialog extends DialogFragment implements CompoundButton.OnC
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.settings_dialog, container, false);
 
         final Spinner dark_mode_opt = v.findViewById(R.id.dark_mode_opt);
         final ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(
                 getContext(),
                 R.array.dark_mode_options,
-                android.R.layout.simple_spinner_item
-        );
+                android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dark_mode_opt.setAdapter(arrayAdapter);
 
@@ -59,8 +59,8 @@ public class SettingsDialog extends DialogFragment implements CompoundButton.OnC
                 if (position == MainActivity.nightMode)
                     return;
 
-                Activity activity = getActivity();
-                if (activity != null){
+                final Activity activity = getActivity();
+                if (activity != null) {
                     MyApp.getSp(activity).edit().putInt(NIGHT_MODE_MODE, position).apply();
                     activity.recreate();
                 }
@@ -69,7 +69,8 @@ public class SettingsDialog extends DialogFragment implements CompoundButton.OnC
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         argb = v.findViewById(R.id.opt_argb);
@@ -88,19 +89,18 @@ public class SettingsDialog extends DialogFragment implements CompoundButton.OnC
         float_alpha.setOnCheckedChangeListener(this);
 
         v.findViewById(R.id.opt_colorpicker).setOnClickListener(view -> {
-            Intent licenseIntent = new Intent(getContext(), LicensesActivity.class);
+            final Intent licenseIntent = new Intent(getContext(), LicensesActivity.class);
             licenseIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-            Activity activity = getActivity();
+            final Activity activity = getActivity();
             if (activity != null)
                 activity.startActivity(licenseIntent);
         });
 
-
         return v;
     }
 
-    static void setDarkMode(int position) {
+    static void setDarkMode(final int position) {
         int nightModeMode;
         switch (position) {
             case 0:
@@ -117,34 +117,36 @@ public class SettingsDialog extends DialogFragment implements CompoundButton.OnC
         AppCompatDelegate.setDefaultNightMode(nightModeMode);
     }
 
-
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+    public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
         if (!isChecked)
             return;
 
         final int buttonId = buttonView.getId();
 
-        if (buttonId == R.id.opt_argb){
+        // Opacity first or last
+        if (buttonId == R.id.opt_argb) {
             isArgbChange(true);
             rgba.setChecked(false);
 
-        } else if (buttonId == R.id.opt_rgba){
+        } else if (buttonId == R.id.opt_rgba) {
             isArgbChange(false);
             argb.setChecked(false);
+        }
 
-        } else if (buttonId == R.id.opt_byte_alpha){
+        // Byte or float alpha
+        else if (buttonId == R.id.opt_byte_alpha) {
             isByteAlphaChange(true);
             float_alpha.setChecked(false);
 
-        } else if (buttonId == R.id.opt_float_alpha){
+        } else if (buttonId == R.id.opt_float_alpha) {
             isByteAlphaChange(false);
             byte_alpha.setChecked(false);
         }
     }
 
-    private void isArgbChange(boolean isArgb) {
-        Activity activity = getActivity();
+    private void isArgbChange(final boolean isArgb) {
+        final Activity activity = getActivity();
         if (activity == null)
             return;
 
@@ -157,8 +159,8 @@ public class SettingsDialog extends DialogFragment implements CompoundButton.OnC
         }
     }
 
-    private void isByteAlphaChange(boolean isByteValue) {
-        Activity activity = getActivity();
+    private void isByteAlphaChange(final boolean isByteValue) {
+        final Activity activity = getActivity();
         if (activity == null)
             return;
 

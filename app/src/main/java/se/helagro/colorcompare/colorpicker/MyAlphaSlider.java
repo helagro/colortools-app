@@ -7,21 +7,18 @@ import android.util.AttributeSet;
 
 import com.flask.colorpicker.Utils;
 import com.flask.colorpicker.builder.PaintBuilder;
-import se.helagro.colorcompare.MyApp;
 import com.hlag.colorcompare.R;
+
+import se.helagro.colorcompare.MyApp;
 
 public class MyAlphaSlider extends MyAbsCustomSlider {
 
-    public interface OnNewAlphaListener {
-        void onNewAlpha(float alpha);
-    }
-
-    OnNewAlphaListener onNewAlphaListener;
-    public int color;
     private final Paint alphaPatternPaint = PaintBuilder.newPaint().build();
     private final Paint barPaint = PaintBuilder.newPaint().build();
     private final Paint solid = PaintBuilder.newPaint().build();
-    private final Paint clearingStroke = PaintBuilder.newPaint().color(0xffaaaaaa).build(); 
+    private final Paint clearingStroke = PaintBuilder.newPaint().color(0xffaaaaaa).build();
+    public int color;
+    OnNewAlphaListener onNewAlphaListener;
     private MyColorPickerView colorPicker;
 
     public MyAlphaSlider(Context context) {
@@ -42,10 +39,9 @@ public class MyAlphaSlider extends MyAbsCustomSlider {
 
         setRotation(270);
 
-        int mBarAlphaTranslation = (int) getResources().getDimension(R.dimen.alpha_bar_translation);
+        final int mBarAlphaTranslation = (int) getResources().getDimension(R.dimen.alpha_bar_translation);
         setTranslationX(MyApp.isRTL() ? mBarAlphaTranslation : -mBarAlphaTranslation);
     }
-
 
     public void setOnNewAlphaListener(OnNewAlphaListener onNewAlphaListener) {
         this.onNewAlphaListener = onNewAlphaListener;
@@ -59,13 +55,13 @@ public class MyAlphaSlider extends MyAbsCustomSlider {
 
     @Override
     protected void drawBar(Canvas barCanvas) {
-        int width = barCanvas.getWidth();
-        int height = barCanvas.getHeight();
+        final int width = barCanvas.getWidth();
+        final int height = barCanvas.getHeight();
 
         barCanvas.drawRect(0, 0, width, height, alphaPatternPaint);
-        int l = Math.max(2, width / 256);
+        final int l = Math.max(2, width / 256);
         for (int x = 0; x <= width; x += l) {
-            float alpha = (float) x / (width - 1);
+            final float alpha = (float) x / (width - 1);
             barPaint.setColor(color);
             barPaint.setAlpha(Math.round(alpha * 255));
             barCanvas.drawRect(x, 0, x + l, height, barPaint);
@@ -80,7 +76,7 @@ public class MyAlphaSlider extends MyAbsCustomSlider {
     }
 
     @Override
-    protected void drawHandle(Canvas canvas, float x, float y) {
+    protected void drawHandle(final Canvas canvas, final float x, final float y) {
         solid.setColor(color);
         solid.setAlpha(Math.round(value * 255));
         canvas.drawCircle(x, y, handleRadius, clearingStroke);
@@ -93,13 +89,17 @@ public class MyAlphaSlider extends MyAbsCustomSlider {
         this.colorPicker = colorPicker;
     }
 
-    public void setColor(int color) {
+    public void setColor(final int color) {
         this.color = color;
         this.value = Utils.getAlphaPercent(color);
         if (bar != null) {
             updateBar();
             invalidate();
         }
+    }
+
+    public interface OnNewAlphaListener {
+        void onNewAlpha(float alpha);
     }
 
 }

@@ -5,7 +5,7 @@ public class Color {
     public int color;
     public long id;
 
-    Color(String name, int color, long id) {
+    Color(final String name, final int color, final long id) {
         this.name = name;
         this.color = color;
         this.id = id;

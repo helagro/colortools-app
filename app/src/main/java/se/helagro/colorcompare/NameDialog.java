@@ -37,7 +37,7 @@ public class NameDialog extends Dialog {
         setContentView(R.layout.text_input_dialog);
 
         final Window window = getWindow();
-        if(window != null) {
+        if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
@@ -49,7 +49,7 @@ public class NameDialog extends Dialog {
 
         color = color | 0xFF000000;
         editText.setTextColor(color);
-        if (ColorUtils.calculateLuminance(color) > LUMINANCE_THRESHOLD){
+        if (ColorUtils.calculateLuminance(color) > LUMINANCE_THRESHOLD) {
 
             findViewById(R.id.name_dialog_grid).setBackgroundTintList((ColorStateList.valueOf(-10066330)));
 

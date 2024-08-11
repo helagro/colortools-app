@@ -49,7 +49,7 @@ public class LibDialog extends DialogFragment implements LibAdapter.OnColorClick
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.color_lib_dialog, container, false);
+        final View v = inflater.inflate(R.layout.color_lib_dialog, container, false);
 
         final Dialog dialog = getDialog();
         if (dialog != null) {

@@ -26,7 +26,6 @@ import com.hlag.colorcompare.R;
 import java.util.ArrayList;
 
 public class MyColorPickerView extends View {
-    static final String TAG = "mColorView";
     private Point centerPoint;
     private float radius;
 

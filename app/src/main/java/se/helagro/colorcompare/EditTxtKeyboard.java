@@ -15,7 +15,6 @@ public class EditTxtKeyboard extends AppCompatEditText {
 
     private OnBackPressedListener onBackPressedListener;
 
-
     public EditTxtKeyboard(Context context) {
         super(context);
     }
@@ -33,7 +32,7 @@ public class EditTxtKeyboard extends AppCompatEditText {
     }
 
     @Override
-    public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+    public boolean onKeyPreIme(final int keyCode, final KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             clearFocus();
             if (onBackPressedListener != null)
@@ -42,9 +41,8 @@ public class EditTxtKeyboard extends AppCompatEditText {
         return false;
     }
 
-
     @Override
-    public void onEditorAction(int actionCode) {
+    public void onEditorAction(final int actionCode) {
         super.onEditorAction(actionCode);
         removeFocus();
     }
@@ -56,4 +54,3 @@ public class EditTxtKeyboard extends AppCompatEditText {
     }
 
 }
-

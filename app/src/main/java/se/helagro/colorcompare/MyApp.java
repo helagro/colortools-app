@@ -15,23 +15,7 @@ public class MyApp extends Application {
 
     static final String TAG = "MyApp";
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        Context context = getApplicationContext();
-
-        try( android.database.sqlite.SQLiteDatabase db = context.openOrCreateDatabase(DbHelper.DB_NAME, MODE_PRIVATE, null)) {
-            if(getSp(getApplicationContext()).getBoolean("first", true)){ // called also after crash - ok
-                db.execSQL("CREATE TABLE IF NOT EXISTS "+ DbHelper.TABLE_NAME +" (id INTEGER primary key, name TEXT, color INTEGER, updated INTEGER)");
-                getSp(getApplicationContext()).edit().putBoolean("first", false).apply();
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    static SharedPreferences getSp(Context context){
+    static SharedPreferences getSp(Context context) {
         return context.getSharedPreferences("default_preferences", Activity.MODE_PRIVATE);
     }
 
@@ -45,7 +29,7 @@ public class MyApp extends Application {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }
 
-    public static int pxToDp(final int px, final Context context){
+    public static int pxToDp(final int px, final Context context) {
         return px / (context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
@@ -54,6 +38,22 @@ public class MyApp extends Application {
 
         final InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        Context context = getApplicationContext();
+
+        try (android.database.sqlite.SQLiteDatabase db = context.openOrCreateDatabase(DbHelper.DB_NAME, MODE_PRIVATE, null)) {
+            if (getSp(getApplicationContext()).getBoolean("first", true)) {
+                db.execSQL("CREATE TABLE IF NOT EXISTS " + DbHelper.TABLE_NAME + " (id INTEGER primary key, name TEXT, color INTEGER, updated INTEGER)");
+                getSp(getApplicationContext()).edit().putBoolean("first", false).apply();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

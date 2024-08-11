@@ -1,5 +1,3 @@
-
-
 package se.helagro.colorcompare;
 
 import static android.graphics.Color.alpha;
@@ -36,23 +34,27 @@ import se.helagro.colorcompare.colorpicker.MyAlphaSlider;
 import se.helagro.colorcompare.colorpicker.MyColorPickerView;
 import se.helagro.colorcompare.colorpicker.MyLightnessSlider;
 
-public class MainActivity extends AppCompatActivity implements LibDialog.LibColorPickedListener, MyAlphaSlider.OnNewAlphaListener, PopupMenu.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity implements LibDialog.LibColorPickedListener,
+        MyAlphaSlider.OnNewAlphaListener, PopupMenu.OnMenuItemClickListener {
 
+    /* ------------------------ VARIABLES ----------------------- */
+
+    private final static String DISPLAY_MODE_BTN_ID = "checkbtn_id_clr";
     private final static String TAG = "Color Activity";
-    final static String DISPLAY_MODE_BTN_ID = "checkbtn_id_clr";
 
     protected static boolean is_argb;
     protected static boolean byte_alpha;
     protected static int nightMode;
+    static boolean wasOpaque = true;
+
+    private boolean dimAllowed = true;
+    private int currentColor;
+    private int clrShowSelected = 0;
 
     private SharedPreferences sp;
-    private DbHelper dbHelper;
-    private boolean dimAllowed = true;
-
-    private ArrayList<Color> colors;
-    private int currentColor;
     private Color savedColor;
-    private int clrShowSelected = 0;
+    private ArrayList<Color> colors;
+    private DbHelper dbHelper;
 
     private FrameLayout root;
     private RadioGroup clrShowGroup;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
     private MyColorPickerView colorWheel;
     private RadioGroup displayOptGroup;
 
+    /* ------------------------ LIFECYCLE ----------------------- */
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,14 +89,15 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
         clrShowGroup = findViewById(R.id.clr_show_group);
 
         clrShowGroup.setBackground(
-            new TileDrawable(
-                AppCompatResources.getDrawable(this, R.drawable.checkered_pattern),
-                Shader.TileMode.REPEAT)
-        );
+                new TileDrawable(
+                        AppCompatResources.getDrawable(this, R.drawable.checkered_pattern),
+                        Shader.TileMode.REPEAT));
 
         mBarAlpha.setOnNewAlphaListener(this);
         colorText.setOnBackPressedListener(this::updateClrText);
-        arrow.setOnClickListener(view1 -> attention_toast(getString(R.string.arrow_message)));
+        arrow.setOnClickListener(view1 -> attentionToast(getString(R.string.arrow_message)));
+
+        /* ------------------------ LISTENERS ----------------------- */
 
         clrShowGroup.setOnCheckedChangeListener((radioGroup, i) -> {
             clrShowSelected = clrShowGroup.getCheckedRadioButtonId() == R.id.clr_show ? 0 : 1;
@@ -112,24 +116,27 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
         });
 
         colorText.setOnEditorActionListener(
-            (textView, i, keyEvent) -> {
-                final double color = ColorConvert.ColorIntFromString(textView.getText().toString());
+                (textView, i, keyEvent) -> {
+                    final String text = textView.getText().toString();
 
-                if (ColorConvert.noErr(color)) {
-                    onInputColor((int) color);
-                } else {
-                    attention_toast(getString(R.string.non_valid_color_input));
-                    updateClrText();
-                }
-                return false;
-            });
+                    try {
+                        final int color = ColorConvert.ColorIntFromString(text);
+                        onInputColor(color);
+                    } catch (final IllegalArgumentException e) {
+                        attentionToast(getString(R.string.non_valid_color_input));
+                        updateClrText();
+                    }
+
+                    return false;
+                });
 
         displayOptGroup.setOnCheckedChangeListener((radioGroup, id) -> {
             updateClrText();
             sp.edit().putInt(DISPLAY_MODE_BTN_ID, id).apply();
         });
 
-        // restores last state
+        /* ---------------------- RESTORE STATE --------------------- */
+
         final int color = sp.getInt("color_int", -16729344);
         mBarLightness.post(() -> mBarLightness.setColor(color));
         mBarAlpha.post(() -> mBarAlpha.setColor(color));
@@ -138,17 +145,99 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
         clrShowGroup.getChildAt(1).setBackgroundColor(sp.getInt("color_int2", -2236451));
 
         final int checked = sp.getInt(DISPLAY_MODE_BTN_ID, R.id.color_hex_btn);
-        try {
-            ((RadioButton) findViewById(checked)).setChecked(true);
-        } catch (Exception ignored) { }
+        ((RadioButton) findViewById(checked)).setChecked(true);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        sp.edit()
+                .putInt("color_int", ((ColorDrawable) clrShowGroup.getChildAt(0).getBackground()).getColor())
+                .putInt("color_int2", ((ColorDrawable) clrShowGroup.getChildAt(1).getBackground()).getColor())
+                .apply();
+
+        MyApp.hideKeyboardFrom(this, this.getCurrentFocus());
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void recreate() {
+        clrShowGroup.check(R.id.clr_show);
+        super.recreate();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DbHelper.getInstance(this).close();
+    }
+
+    /* ------------------------ LISTENERS ----------------------- */
+
+    @Override
+    public boolean onMenuItemClick(final MenuItem item) {
+        if (item.getItemId() == R.id.more_save) {
+            if (savedColor == null) { // check from where it was made
+                new NameDialog(this, currentColor, name -> {
+                    final Color color = new Color(name, currentColor, -1);
+                    dbHelper.updateColor(color);
+                    colors.add(0, color);
+                });
+            } else {
+                dbHelper.delColor(savedColor.id);
+                colors.remove(savedColor);
+            }
+
+        } else if (item.getItemId() == R.id.more_save_lib) {
+            new LibDialog(colors, currentColor, displayOptGroup.getCheckedRadioButtonId(), this)
+                    .show(getSupportFragmentManager(), "LibDialog");
+        } else if (item.getItemId() == R.id.more_opt) {
+            new SettingsDialog(currentColor).show(getSupportFragmentManager(), "MainAct");
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onInputColor(final int color) {
+        colorWheel.setColor(color);
+
+        currentColor = color;
+        clrShowGroup.getChildAt(clrShowSelected).setBackgroundColor(color);
+        updateClrText();
+        onNewAlpha(alpha(color) / 255f);
+    }
+
+    @Override
+    public void onNewAlpha(final float alpha) {
+        final boolean isOpaque = (alpha == 1);
+
+        if (isOpaque != wasOpaque) {
+            if (isOpaque) {
+                ((RadioButton) displayOptGroup.getChildAt(1)).setText("RGB");
+
+            } else {
+                String alphaRgbLabel = is_argb ? "ARGB" : "RGBA";
+                ((RadioButton) displayOptGroup.getChildAt(1)).setText(alphaRgbLabel);
+            }
+            wasOpaque = isOpaque;
+        }
+    }
+
+    /* ---------------------- OTHER METHODS --------------------- */
 
     void loadFromStorage() {
         sp = MyApp.getSp(this);
+
         nightMode = sp.getInt(SettingsDialog.NIGHT_MODE_MODE, 0);
         is_argb = sp.getBoolean(SettingsDialog.IS_ARGB, true);
         byte_alpha = sp.getBoolean(SettingsDialog.BYTE_ALPHA, true);
-        dbHelper = DbHelper.getInstance(this.getApplicationContext());
+
+        dbHelper = DbHelper.getInstance(getApplicationContext());
         colors = dbHelper.getColors();
     }
 
@@ -162,8 +251,7 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
         final MenuPopupHelper menuPopupHelper = new MenuPopupHelper(
                 new ContextThemeWrapper(this, R.style.Color_Opt_Popup),
                 (MenuBuilder) moreMenu.getMenu(),
-                moreBtn
-        );
+                moreBtn);
         menuPopupHelper.setForceShowIcon(true);
 
         menuPopupHelper.setOnDismissListener(() -> {
@@ -197,74 +285,18 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
 
     }
 
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        if(item.getItemId() == R.id.more_save) {
-            if (savedColor == null) { // check from where it was made
-                new NameDialog(this, currentColor, name -> {
-                    final Color color = new Color(name, currentColor, -1);
-                    dbHelper.updateColor(color);
-                    colors.add(0, color);
-                });
-            } else {
-                dbHelper.delColor(savedColor.id);
-                colors.remove(savedColor);
-            }
-
-        } else if (item.getItemId() == R.id.more_save_lib) {
-            new LibDialog(colors, currentColor, displayOptGroup.getCheckedRadioButtonId(), this)
-                    .show(getSupportFragmentManager(), "LibDialog");
-        }
-
-        else if (item.getItemId() == R.id.more_opt) {
-            new SettingsDialog(currentColor).show(getSupportFragmentManager(), "MainAct");
-        }
-
-        return true;
-    }
-
-
-    @Override
-    public void onInputColor(int color) {
-        colorWheel.setColor(color);
-
-        currentColor = color;
-        clrShowGroup.getChildAt(clrShowSelected).setBackgroundColor(color);
-        updateClrText();
-        onNewAlpha(alpha(color) / 255f);
-    }
-
-
-    static boolean wasOpaque = true;
-
-    @Override
-    public void onNewAlpha(float alpha) {
-        final boolean isOpaque = (alpha == 1);
-
-        if (isOpaque != wasOpaque) {
-            if (isOpaque) {
-                ((RadioButton) displayOptGroup.getChildAt(1)).setText("RGB");
-
-            } else {
-                String alphaRgbLabel = is_argb ? "ARGB" : "RGBA";
-                ((RadioButton) displayOptGroup.getChildAt(1)).setText(alphaRgbLabel);
-            }
-            wasOpaque = isOpaque;
-        }
-    }
-
     private void updateClrText() {
         colorText.setText(
                 ColorConvert.ColorIntToString(displayOptGroup.getCheckedRadioButtonId(), currentColor));
 
         if (colorText.hasFocus()) {
-            int position = colorText.length();
-            Editable editable = colorText.getText();
+            final int position = colorText.length();
+            final Editable editable = colorText.getText();
             Selection.setSelection(editable, position);
         }
     }
 
-    public void attention_toast(String message) {
+    public void attentionToast(final String message) {
         dimAllowed = false;
         darken();
         new Handler().postDelayed(() -> {
@@ -279,37 +311,13 @@ public class MainActivity extends AppCompatActivity implements LibDialog.LibColo
     }
 
     private void lighten() {
-        if (!dimAllowed) return;
+        if (!dimAllowed)
+            return;
 
         try {
             root.animate().alpha(1f).setDuration(500);
-        } catch (Exception ignored) { }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        sp.edit().putInt("color_int", ((ColorDrawable) clrShowGroup.getChildAt(0).getBackground()).getColor()).apply();
-        sp.edit().putInt("color_int2", ((ColorDrawable) clrShowGroup.getChildAt(1).getBackground()).getColor()).apply();
-
-        MyApp.hideKeyboardFrom(this, this.getCurrentFocus());
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void recreate() {
-        clrShowGroup.check(R.id.clr_show);
-        super.recreate();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        DbHelper.getInstance(this).close();
+        } catch (Exception ignored) {
+        }
     }
 
 }

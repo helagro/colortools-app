@@ -2,7 +2,6 @@ package se.helagro.colorcompare.colorlibrary;
 
 import static se.helagro.colorcompare.ColorConvert.ColorIntFromString;
 import static se.helagro.colorcompare.ColorConvert.ColorIntToString;
-import static se.helagro.colorcompare.ColorConvert.noErr;
 
 import android.content.Context;
 import android.graphics.Shader;
@@ -28,8 +27,9 @@ import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.graphics.ColorUtils;
 
-import java.util.ArrayList;
 import com.hlag.colorcompare.R;
+
+import java.util.ArrayList;
 
 import se.helagro.colorcompare.Color;
 import se.helagro.colorcompare.DbHelper;
@@ -39,12 +39,7 @@ import se.helagro.colorcompare.TileDrawable;
 
 class LibAdapter extends ArrayAdapter<Color> {
 
-    interface OnColorClickedListener {
-        void onColorClicked(int color);
-    }
-
     static final private String TAG = "LibAdapter";
-
     // from init
     private final DbHelper dbHelper;
     private final TileDrawable tileDrawable;
@@ -53,17 +48,15 @@ class LibAdapter extends ArrayAdapter<Color> {
     private final int currentColor;
     private final LayerDrawable currentColorDraw;
     private final int checkedId;
-
+    private final View.OnLongClickListener selectAllOnLongClick = v -> {
+        ((EditTxtKeyboard) v).selectAll();
+        return false;
+    };
     // for cursor jump
     private int selectedPos = -1;
     private int selectedId = -1;
 
-   private final  View.OnLongClickListener selectAllOnLongClick = v -> {
-       ((EditTxtKeyboard)v).selectAll();
-       return false;
-   };
-
-    LibAdapter(@NonNull Context context, int checkedId, ArrayList<Color> colors, int currentColor, OnColorClickedListener onColorClickedListener) {
+    LibAdapter(@NonNull final Context context, final int checkedId, final ArrayList<Color> colors, final int currentColor, final OnColorClickedListener onColorClickedListener) {
         super(context, R.layout.color_row_layout, colors);
 
         this.onColorClickedListener = onColorClickedListener;
@@ -73,13 +66,12 @@ class LibAdapter extends ArrayAdapter<Color> {
 
         dbHelper = DbHelper.getInstance(context.getApplicationContext());
         tileDrawable = new TileDrawable(
-            AppCompatResources.getDrawable(getContext(), R.drawable.checkered_pattern),
-            Shader.TileMode.REPEAT
+                AppCompatResources.getDrawable(getContext(), R.drawable.checkered_pattern),
+                Shader.TileMode.REPEAT
         );
         currentColorDraw = (LayerDrawable) AppCompatResources.getDrawable(getContext(), R.drawable.color_preview);
-        ((GradientDrawable)currentColorDraw.getDrawable(1)).setColor(currentColor);
+        ((GradientDrawable) currentColorDraw.getDrawable(1)).setColor(currentColor);
     }
-
 
     @NonNull
     @Override
@@ -94,7 +86,7 @@ class LibAdapter extends ArrayAdapter<Color> {
             viewHolder.color = getItem(position);
 
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.color_row_layout, parent, false);
-            convertView.setOnClickListener(view -> { ;
+            convertView.setOnClickListener(view -> {
                 onColorClickedListener.onColorClicked(viewHolder.color.color);
             });
 
@@ -134,12 +126,11 @@ class LibAdapter extends ArrayAdapter<Color> {
                     }
 
                     final double colorInp = ColorIntFromString(editable.toString());
-                    if (noErr(colorInp)) {
+                    try {
                         setViewColors((int) colorInp, viewHolder);
                         viewHolder.color.color = (int) colorInp;
                         dbHelper.updateColor(viewHolder.color);
-
-                    } else {
+                    } catch (IllegalArgumentException e){
                         Toast.makeText(getContext(), R.string.non_valid_color_input, Toast.LENGTH_LONG).show();
                         viewHolder.colorEdit.setText(ColorIntToString(checkedId, viewHolder.color.color));
                     }
@@ -152,19 +143,22 @@ class LibAdapter extends ArrayAdapter<Color> {
             viewHolder.pos = position;
             viewHolder.color = getItem(position);
 
-            if (position == selectedPos){
+            if (position == selectedPos) {
                 final EditTxtKeyboard editTxtKeyboard = convertView.findViewById(selectedId);
                 final int[] selection = {editTxtKeyboard.getSelectionStart(), editTxtKeyboard.getSelectionEnd()};
                 viewHolder.nameEdit.post(() -> {
-                    if(position == selectedPos){
-                        try{editTxtKeyboard.setSelection(selection[0], selection[1]);}catch (IndexOutOfBoundsException ignored){}
+                    if (position == selectedPos) {
+                        try {
+                            editTxtKeyboard.setSelection(selection[0], selection[1]);
+                        } catch (IndexOutOfBoundsException ignored) {
+                        }
                     }
                 });
             }
         }
 
         final Color color = viewHolder.color;
-        if (color == null){
+        if (color == null) {
             viewHolder.nameEdit.setText("");
         } else {
             viewHolder.nameEdit.setText(color.name);
@@ -222,6 +216,10 @@ class LibAdapter extends ArrayAdapter<Color> {
                 new ContextThemeWrapper(getContext(), R.style.Color_Opt_Popup), (MenuBuilder) popupMenu.getMenu(), imgBtn); // baseview
         menuPopupHelper.setForceShowIcon(true);
         menuPopupHelper.show();
+    }
+
+    interface OnColorClickedListener {
+        void onColorClicked(int color);
     }
 
 }

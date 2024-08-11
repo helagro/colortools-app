@@ -18,27 +18,27 @@ public class DbHelper {
     private static DbHelper ourInstance;
     private SQLiteDatabase db;
 
-    public static DbHelper getInstance(Context context) {
+    private DbHelper(final Context context) {
+        db = context.openOrCreateDatabase(DB_NAME, MODE_PRIVATE, null);
+    }
+
+    public static DbHelper getInstance(final Context context) {
         if (ourInstance == null)
             ourInstance = new DbHelper(context);
         return ourInstance;
     }
 
-    private DbHelper(Context context) {
-        db = context.openOrCreateDatabase(DB_NAME, MODE_PRIVATE, null);
-    }
-
     ArrayList<Color> getColors() {
         final ArrayList<Color> colors = new ArrayList<>();
         final Cursor myCursor = db.rawQuery(
-            "select name, color, id from " + TABLE_NAME + " ORDER BY updated DESC;",
-            null
+                "select name, color, id from " + TABLE_NAME + " ORDER BY updated DESC;",
+                null
         );
         while (myCursor.moveToNext()) {
             colors.add(new Color(
-                myCursor.getString(0),
-                myCursor.getInt(1),
-                myCursor.getLong(2)
+                    myCursor.getString(0),
+                    myCursor.getInt(1),
+                    myCursor.getLong(2)
             ));
         }
         myCursor.close();
@@ -46,7 +46,7 @@ public class DbHelper {
         return colors;
     }
 
-    public void updateColor(Color color) {
+    public void updateColor(final Color color) {
         final ContentValues cv = new ContentValues();
         cv.put("name", color.name);
         cv.put("color", color.color);
@@ -56,7 +56,7 @@ public class DbHelper {
             color.id = db.insertWithOnConflict(TABLE_NAME, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public void delColor(Long id) {
+    public void delColor(final Long id) {
         db.delete(TABLE_NAME, "id=" + id, null);
     }
 
